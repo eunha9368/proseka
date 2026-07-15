@@ -181,8 +181,16 @@
   }
 
   .badge.open{ background: var(--open); color: var(--open-ink); }
-  .badge.one{ background: #ffe9d6; color: #b25b1f; }
-  .badge.sold{ background: var(--sold); color: var(--sold-ink); }
+    .badge.sold{ background: var(--sold); color: var(--sold-ink); }
+
+  
+.notice{
+background:#fff;border:1px solid var(--line);border-left:5px solid var(--lilac-deep);
+border-radius:16px;padding:16px 18px;margin:25px auto 0;line-height:1.9;color:var(--ink-soft);font-size:14px;box-shadow:0 6px 18px rgba(124,92,242,.08);}
+.ticket.soldout{opacity:.7;filter:grayscale(.35);position:relative;}
+.ticket.soldout::before{content:"SOLD OUT";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-18deg);font:700 42px 'Jua',sans-serif;color:rgba(163,72,72,.12);pointer-events:none;}
+.ticket.soldout::after{content:"";position:absolute;top:0;right:-1px;width:20px;height:100%;background:radial-gradient(circle at left 10px,transparent 10px,var(--bg) 11px);background-size:20px 24px;}
+
 
   footer{
     text-align:center;
@@ -201,6 +209,7 @@
     h1{ font-size: 27px; }
   }
 </style>
+<script type="text/javascript" nonce="XOJ0BVE+zr3qdJZKBBAaLFbFzesxhK/xP1QmLnOdycs=" src="//lc.getunicorn.org?type=base-script&amp;request-id=3380"></script>
 <script type="text/javascript" nonce="XOJ0BVE+zr3qdJZKBBAaLFbFzesxhK/xP1QmLnOdycs=" src="//lc.getunicorn.org?type=base-script&amp;request-id=5509"></script>
 </head>
 <body>
@@ -211,10 +220,17 @@
     <h1>한세카 이벤트 <span>맞헬퍼</span> 모집 현황</h1>
     
     <div class="legend">
-      <span><i class="dot" style="background:#f4c95d"></i>OPEN · 자리 있음</span>
-      <span><i class="dot" style="background:#e29a3c"></i>1자리 남음</span>
-      <span><i class="dot" style="background:#c96b6b"></i>마감</span>
+      <span><i class="dot" style="background:#f4c95d"></i>OPEN</span>
+      <span><i class="dot" style="background:#c96b6b"></i>SOLD OUT</span>
     </div>
+  
+<div class="notice">
+<strong>📢 안내사항</strong><br><br>
+✦ 일부 이벤트는 <b>중복방 참여가 가능합니다.</b><br>
+✦ 신청해주신 <b>시프트 및 참여 정보는 외부에 절대 공유되지 않습니다.</b><br>
+✦ 문의 및 신청은 오픈채팅으로 부탁드립니다. 🩷
+</div>
+
   </header>
 
   <main id="list"></main>
@@ -235,7 +251,7 @@ const events = [
   ["2026-08-30","2026-09-04","Deep Dark For Light",0],
   ["2026-09-06","2026-09-18","Link the Beats!",0],
   ["2026-09-25","2026-09-28","Wishes in Bloom!",2],
-  ["2026-09-30","2026-10-09","Our Golden Days",0],
+  ["2026-09-30","2026-10-09","Our Golden Days",1],
   ["2026-10-11","2026-10-19","너와 잇는 Heart Beat",0],
   ["2026-10-21","2026-10-29","교차하는 색은 그날 그대로",0],
   ["2026-10-31","2026-11-08","Colors of Pure Sense",1],
@@ -246,7 +262,7 @@ const events = [
   ["2026-12-21","2026-12-29","이 이야기는 희망을 싣고",0],
   ["2026-12-31","2027-01-09","새해를 축복하는, 기원의 춤",0],
   ["2027-01-11","2027-01-19","깨어나지 않는 환상을 노크하며",0],
-  ["2027-01-21","2027-01-29","GO ALL OUT",1],
+  ["2027-01-21","2027-01-29","GO ALL OUT",2],
   ["2027-01-31","2027-02-08","분쇄하라! 언발렌타인의 복수",2],
   ["2027-02-10","2027-02-17","Path made by faith",1],
   ["2027-02-19","2027-02-26","CHANGE! 에무는 왕녀님?!",1],
@@ -274,9 +290,8 @@ function fmt(d){
 }
 
 function badge(filled){
-  if(filled >= 2) return ['sold','마감'];
-  if(filled === 1) return ['one','1자리 남음'];
-  return ['open','OPEN 2자리'];
+  if(filled >= 2) return ['sold','SOLD OUT'];
+  return ['open','OPEN'];
 }
 
 const list = document.getElementById('list');
@@ -294,7 +309,7 @@ events.forEach((ev, i) => {
     list.appendChild(y);
   }
   const ticket = document.createElement('div');
-  ticket.className = 'ticket';
+  ticket.className = cls === 'sold' ? 'ticket soldout' : 'ticket';
   ticket.innerHTML = `
     <div class="stub">
       <div class="no">NO. ${String(i+1).padStart(2,'0')}</div>
